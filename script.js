@@ -1,41 +1,48 @@
 /* ══════════════════════════════════════════════
-   SKYY // Portfolio — Scripts
+   SKYY // Portfolio — Scripts (Performance Optimized)
    ══════════════════════════════════════════════ */
 
-// ── DETECT TOUCH DEVICE ──────────────────────────────────────────────────────
-const isTouchDevice = () => window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+// ── DETECT TOUCH / LOW-END DEVICE ────────────────────────────────────────────
+const isTouch  = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+const isMobile = window.innerWidth <= 640;
 
 // ── CUSTOM CURSOR (desktop only) ─────────────────────────────────────────────
 const cursor = document.getElementById('cursor');
 const ring   = document.getElementById('cursor-ring');
-let mx = 0, my = 0, rx = 0, ry = 0;
 
-if (!isTouchDevice()) {
+if (!isTouch) {
+    let mx = 0, my = 0, rx = 0, ry = 0;
+
     document.addEventListener('mousemove', e => {
         mx = e.clientX;
         my = e.clientY;
-        cursor.style.left = mx - 4 + 'px';
-        cursor.style.top  = my - 4 + 'px';
-    });
+        // Use transform instead of left/top to avoid layout reflow
+        cursor.style.transform = `translate(${mx - 4}px, ${my - 4}px)`;
+    }, { passive: true });
+
+    // Reset cursor initial position style
+    cursor.style.left = '0';
+    cursor.style.top  = '0';
 
     function animRing() {
         rx += (mx - rx) * 0.15;
         ry += (my - ry) * 0.15;
-        ring.style.left = rx + 'px';
-        ring.style.top  = ry + 'px';
+        ring.style.transform = `translate(${rx - 16}px, ${ry - 16}px)`;
         requestAnimationFrame(animRing);
     }
+    // Override default transform on ring
+    ring.style.transform = 'translate(-9999px, -9999px)';
     animRing();
 
     document.querySelectorAll('a, button').forEach(el => {
         el.addEventListener('mouseenter', () => {
-            cursor.style.transform = 'scale(2)';
-            ring.style.transform   = 'translate(-50%,-50%) scale(1.5)';
+            cursor.style.scale   = '2';
+            ring.style.scale     = '1.5';
             ring.style.borderColor = 'rgba(0,255,136,0.8)';
         });
         el.addEventListener('mouseleave', () => {
-            cursor.style.transform = 'scale(1)';
-            ring.style.transform   = 'translate(-50%,-50%) scale(1)';
+            cursor.style.scale   = '1';
+            ring.style.scale     = '1';
             ring.style.borderColor = 'rgba(0,255,136,0.5)';
         });
     });
@@ -64,12 +71,11 @@ hamburger.addEventListener('click', () => {
     hamburger.classList.contains('open') ? closeMenu() : openMenu();
 });
 
-// Close menu on Escape key
 document.addEventListener('keydown', e => {
     if (e.key === 'Escape') closeMenu();
 });
 
-// ── MATRIX RAIN ──────────────────────────────────────────────────────────────
+// ── MATRIX RAIN (performance-aware) ──────────────────────────────────────────
 const canvas = document.getElementById('matrix-canvas');
 const ctx    = canvas.getContext('2d');
 
@@ -78,35 +84,43 @@ function resizeCanvas() {
     canvas.height = window.innerHeight;
 }
 resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
 
-const chars    = '01アイウエオカキクケコサシスセソタチツテトナニヌネノ@#$%^&*(){}[]<>?/\\'.split('');
-const fontSize = 13;
+let resizeTimer;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => { resizeCanvas(); initMatrix(); }, 200);
+}, { passive: true });
+
+const chars    = '01アカキクコサシスセタチナニ@#$%<>?'.split(''); // Reduced charset
+const fontSize = isMobile ? 16 : 13; // Fewer columns on mobile (larger font = fewer cols)
+const interval = isMobile ? 100 : 50; // Half the frame rate on mobile
 let cols, drops;
 
 function initMatrix() {
-    cols  = Math.floor(canvas.width / fontSize);
+    // On mobile, only render every 2nd column to cut workload in half
+    const density = isMobile ? 2 : 1;
+    cols  = Math.floor(canvas.width / (fontSize * density));
     drops = Array(cols).fill(1);
 }
 initMatrix();
-window.addEventListener('resize', initMatrix);
 
 function drawMatrix() {
-    ctx.fillStyle   = 'rgba(14,20,32,0.06)';
+    ctx.fillStyle = 'rgba(14,20,32,0.07)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.font = `${fontSize}px monospace`;
 
+    const density = isMobile ? 2 : 1;
     drops.forEach((y, i) => {
         const char      = chars[Math.floor(Math.random() * chars.length)];
         ctx.fillStyle   = y === 1 ? '#a0e8ff' : '#43e097';
-        ctx.globalAlpha = Math.random() * 0.4 + 0.15;
-        ctx.fillText(char, i * fontSize, y * fontSize);
+        ctx.globalAlpha = Math.random() * 0.35 + 0.1;
+        ctx.fillText(char, i * fontSize * density, y * fontSize);
         ctx.globalAlpha = 1;
-
         if (y * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
         drops[i]++;
     });
 }
-setInterval(drawMatrix, 50);
+setInterval(drawMatrix, interval);
 
 // ── SCROLL REVEAL ─────────────────────────────────────────────────────────────
 const observer = new IntersectionObserver(entries => {
@@ -118,16 +132,16 @@ const observer = new IntersectionObserver(entries => {
             });
         }
     });
-}, { threshold: 0.12 });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-// Observe skills section directly for skill bar animation
+// Skill bars trigger
 const skillObs = new IntersectionObserver(entries => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
             entry.target.querySelectorAll('.skill-fill').forEach(fill => {
-                setTimeout(() => { fill.style.width = fill.dataset.width; }, 200);
+                setTimeout(() => { fill.style.width = fill.dataset.width; }, 150);
             });
         }
     });
@@ -142,84 +156,64 @@ let li = 0, ci = 0, deleting = false;
 
 function typeStep() {
     const line = lines[li];
-
     if (!deleting) {
         tw.textContent = line.slice(0, ++ci);
-        if (ci === line.length) {
-            deleting = true;
-            setTimeout(typeStep, 1800);
-            return;
-        }
+        if (ci === line.length) { deleting = true; setTimeout(typeStep, 1800); return; }
     } else {
         tw.textContent = line.slice(0, --ci);
-        if (ci === 0) {
-            deleting = false;
-            li = (li + 1) % lines.length;
-            setTimeout(typeStep, 400);
-            return;
-        }
+        if (ci === 0) { deleting = false; li = (li + 1) % lines.length; setTimeout(typeStep, 400); return; }
     }
-
-    setTimeout(typeStep, deleting ? 40 : 80);
+    setTimeout(typeStep, deleting ? 45 : 85);
 }
-setTimeout(typeStep, 2000);
+setTimeout(typeStep, 1500);
 
-// ── ORBIT DOT ─────────────────────────────────────────────────────────────────
+// ── ORBIT DOT (skip rAF on mobile, use CSS animation instead) ────────────────
 const dot = document.getElementById('orbitDot');
-let angle = 0;
 
-function orbitStep() {
-    angle += 0.015;
-    const r  = 148;
-    const cx = 150, cy = 150;
-    dot.style.left = (cx + r * Math.cos(angle)) + 'px';
-    dot.style.top  = (cy + r * Math.sin(angle)) + 'px';
-    requestAnimationFrame(orbitStep);
+if (!isMobile) {
+    let angle = 0;
+    function orbitStep() {
+        angle += 0.015;
+        dot.style.left = (150 + 148 * Math.cos(angle)) + 'px';
+        dot.style.top  = (150 + 148 * Math.sin(angle)) + 'px';
+        requestAnimationFrame(orbitStep);
+    }
+    orbitStep();
+} else {
+    // CSS-driven orbit on mobile — zero JS cost
+    dot.classList.add('orbit-css');
 }
-orbitStep();
 
-// ── NAVBAR ACTIVE STATE ───────────────────────────────────────────────────────
-const sections    = document.querySelectorAll('section[id]');
-const navLinkEls  = document.querySelectorAll('.nav-links a');
+// ── NAVBAR ACTIVE STATE (throttled) ───────────────────────────────────────────
+const sections   = document.querySelectorAll('section[id]');
+const navLinkEls = document.querySelectorAll('.nav-links a');
+const backToTop  = document.getElementById('backToTop');
+let ticking      = false;
 
-window.addEventListener('scroll', () => {
-    let current = '';
+function onScroll() {
+    if (ticking) return;
+    ticking = true;
 
-    sections.forEach(section => {
-        if (window.scrollY >= section.offsetTop - 130) {
-            current = section.getAttribute('id');
-        }
+    requestAnimationFrame(() => {
+        let current = '';
+        const y = window.scrollY;
+
+        sections.forEach(s => {
+            if (y >= s.offsetTop - 140) current = s.id;
+        });
+
+        navLinkEls.forEach(link => {
+            link.style.color = link.getAttribute('href') === '#' + current ? 'var(--green)' : '';
+        });
+
+        backToTop.classList.toggle('show', y > 400);
+        ticking = false;
     });
+}
 
-    navLinkEls.forEach(link => {
-        link.style.color = '';
-        if (link.getAttribute('href') === '#' + current) {
-            link.style.color = 'var(--green)';
-        }
-    });
-
-    // Back to top button visibility
-    backToTop.classList.toggle('show', window.scrollY > 400);
-}, { passive: true });
+window.addEventListener('scroll', onScroll, { passive: true });
 
 // ── BACK TO TOP ───────────────────────────────────────────────────────────────
-const backToTop = document.getElementById('backToTop');
-
 backToTop.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 });
-
-// ── TOUCH: TAP RIPPLE ON CARDS ────────────────────────────────────────────────
-if (isTouchDevice()) {
-    document.querySelectorAll('.skill-card, .journey-card, .contact-item').forEach(card => {
-        card.addEventListener('touchstart', function () {
-            this.style.transition = 'border-color 0.1s, background 0.1s';
-        }, { passive: true });
-
-        card.addEventListener('touchend', function () {
-            setTimeout(() => {
-                this.style.transition = '';
-            }, 300);
-        }, { passive: true });
-    });
-}
