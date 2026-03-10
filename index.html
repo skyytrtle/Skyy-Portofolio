@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SKYY // Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <canvas id="matrix-canvas"></canvas>
+    <div id="cursor"></div>
+    <div id="cursor-ring"></div>
+
+    <!-- ── NAV ── -->
+    <nav>
+        <div class="nav-logo">
+            SKYY
+            <span>INFORMATICS ENGINEERING // ITERA</span>
+        </div>
+
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <div class="nav-links" id="navLinks">
+            <a href="#about"   onclick="closeMenu()">About</a>
+            <a href="#skills"  onclick="closeMenu()">Skills</a>
+            <a href="#journey" onclick="closeMenu()">Journey</a>
+            <a href="#contact" onclick="closeMenu()">Contact</a>
+        </div>
+
+        <div class="nav-overlay" id="navOverlay" onclick="closeMenu()"></div>
+    </nav>
+
+    <!-- ── HERO ── -->
+    <section id="hero">
+        <div class="hero-tag">SEYSAR RIZKY SUJADI — INFORMATICS ENGINEERING STUDENT — ITERA</div>
+        <h1 class="hero-name">
+            HELLO,<br>
+            I'M <span class="glitch" data-text="SKYY">SKYY</span>
+        </h1>
+        <p class="hero-sub">
+            Informatics Engineering Student — <span>Sumatera Institute of Technology</span>
+        </p>
+        <p class="hero-desc">
+            &gt; Informatics Engineering Student — ITERA_<br>
+            &gt; Aktif berorganisasi &amp; berprestasi<br>
+            &gt; Learning, exploring, growing..
+        </p>
+        <div class="hero-cta">
+            <a href="#about"   class="btn-primary">EXPLORE</a>
+            <a href="#contact" class="btn-secondary">CONTACT</a>
+        </div>
+
+        <div class="hero-deco">
+            <div class="hex-ring"></div>
+            <div class="hex-ring"></div>
+            <div class="hex-ring"></div>
+            <div class="hex-center">S</div>
+            <div class="hex-dot" id="orbitDot"></div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ── ABOUT ── -->
+    <section id="about">
+        <div class="section-header reveal">
+            <span class="section-tag">01 // ABOUT</span>
+            <h2 class="section-title">Who Am I</h2>
+            <div class="section-line"></div>
+        </div>
+
+        <div class="about-grid">
+            <div class="about-text reveal reveal-delay-1">
+                <p>
+                    Halo! Saya <span class="highlight">Seysar Rizky Sujadi (Skyy)</span>,
+                    Informatics Engineering student at <span class="highlight">Sumatera Institute of Technology</span>.
+                </p>
+                <p>
+                    Saya sedang menjalani perjalanan belajar di bidang ilmu komputer,
+                    dengan minat yang terus berkembang dalam dunia teknologi dan pemrograman.
+                </p>
+                <p>
+                    Di luar akademik, saya juga aktif dalam berbagai <span class="highlight">organisasi</span>
+                    dan berprestasi di bidang <span class="highlight">olahraga</span> —
+                    karena berkembang bukan hanya soal kode, tapi juga karakter.
+                </p>
+            </div>
+
+            <div class="terminal-box reveal reveal-delay-2">
+                <div class="terminal-bar">
+                    <div class="t-dot"></div>
+                    <div class="t-dot"></div>
+                    <div class="t-dot"></div>
+                    <span class="terminal-title">skyy@itera:~$</span>
+                </div>
+                <div class="terminal-body">
+                    <div class="t-line">
+                        <span class="t-prompt">$</span>
+                        <span class="t-cmd">whoami</span>
+                    </div>
+                    <div class="t-out val">Seysar Rizky Sujadi</div>
+
+                    <div class="t-line" style="margin-top: 8px;">
+                        <span class="t-prompt">$</span>
+                        <span class="t-cmd">cat profile.json</span>
+                    </div>
+                    <div class="t-out">{ "alias": <span style="color: var(--green);">"Skyy"</span>,</div>
+                    <div class="t-out">&nbsp;&nbsp;"role": <span style="color: var(--cyan);">"Informatics Engineering Student"</span>,</div>
+                    <div class="t-out">&nbsp;&nbsp;"uni": <span style="color: var(--cyan);">"ITERA"</span>,</div>
+                    <div class="t-out">&nbsp;&nbsp;"status": <span style="color: var(--green);">"Active"</span>,</div>
+                    <div class="t-out">&nbsp;&nbsp;"location": <span style="color: var(--cyan);">"Lampung, ID"</span> }</div>
+
+                    <div class="t-line" style="margin-top: 8px;">
+                        <span class="t-prompt">$</span>
+                        <span class="t-cmd" id="typewriter"></span>
+                        <span style="color: var(--green); animation: blink 1s infinite;">█</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ── SKILLS ── -->
+    <section id="skills">
+        <div class="section-header reveal">
+            <span class="section-tag">02 // SKILLS</span>
+            <h2 class="section-title">Tech Stack</h2>
+            <div class="section-line"></div>
+        </div>
+
+        <div class="skills-container">
+            <div class="skill-card reveal reveal-delay-1">
+                <div class="skill-name">C++ <span class="skill-pct">80%</span></div>
+                <div class="skill-bar"><div class="skill-fill" data-width="80%"></div></div>
+            </div>
+            <div class="skill-card reveal reveal-delay-2">
+                <div class="skill-name">Python <span class="skill-pct">90%</span></div>
+                <div class="skill-bar"><div class="skill-fill" data-width="90%"></div></div>
+            </div>
+            <div class="skill-card reveal reveal-delay-3">
+                <div class="skill-name">JavaScript <span class="skill-pct">30%</span></div>
+                <div class="skill-bar"><div class="skill-fill" data-width="30%"></div></div>
+            </div>
+            <div class="skill-card reveal reveal-delay-4">
+                <div class="skill-name">
+                    Cyber Security
+                    <span class="skill-pct" style="color: var(--cyan);">Minat</span>
+                </div>
+                <div class="skill-bar">
+                    <div class="skill-fill" data-width="40%"
+                         style="background: linear-gradient(90deg, var(--cyan), var(--green));"></div>
+                </div>
+            </div>
+            <div class="skill-card reveal reveal-delay-1">
+                <div class="skill-name">Network Fundamentals <span class="skill-pct">55%</span></div>
+                <div class="skill-bar"><div class="skill-fill" data-width="55%"></div></div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ── JOURNEY ── -->
+    <section id="journey">
+        <div class="section-header reveal">
+            <span class="section-tag">03 // JOURNEY</span>
+            <h2 class="section-title">Experience &amp; Education</h2>
+            <div class="section-line"></div>
+        </div>
+
+        <div class="journey-grid">
+
+            <div class="journey-card reveal reveal-delay-1">
+                <div class="journey-card-title">Riwayat Pendidikan</div>
+                <ul class="journey-list">
+                    <li>SD Muhammadiyah Gisting</li>
+                    <li>SMP Muhammadiyah Gisting</li>
+                    <li>SMA Muhammadiyah Gisting</li>
+                    <li>S1 Informatics Engineering — ITERA <span class="badge">AKTIF</span></li>
+                </ul>
+            </div>
+
+            <div class="journey-card reveal reveal-delay-2">
+                <div class="journey-card-title">Pengalaman Akademik</div>
+                <ul class="journey-list">
+                    <li>Ranking Paralel SMP (7–9)</li>
+                    <li>Beasiswa Bebas SPP SMA</li>
+                    <li>Ranking Paralel SMA (10–12)</li>
+                    <li>Ranking 2 Eligible IPA</li>
+                    <li>Finalis Eduversal Math Competition Nasional</li>
+                </ul>
+            </div>
+
+            <div class="journey-card reveal reveal-delay-3">
+                <div class="journey-card-title">Pengalaman Non-Akademik</div>
+                <ul class="journey-list">
+                    <li>Paskibra</li>
+                    <li>Pramuka / HW</li>
+                    <li>Juara 3 Snipers Elite Basketball 2024 <span class="badge">🏀</span></li>
+                    <li>Juara 3 Snipers Elite Basketball 2025 <span class="badge">🏀</span></li>
+                    <li>Juara 3 PORKAB Tanggamus Cabor Basket</li>
+                </ul>
+            </div>
+
+            <div class="journey-card reveal reveal-delay-4">
+                <div class="journey-card-title">Pengalaman Organisasi</div>
+                <ul class="journey-list">
+                    <li>Ketua Divisi Pengkaderan IPM</li>
+                    <li>Ketua Pelaksana First Meet TI 2025</li>
+                    <li>Ketua Divisi Humas BPA</li>
+                    <li>Humas Eksternal Nusantera</li>
+                    <li>Kadiv Koorlap Outbound Humas Nusantera</li>
+                    <li>Anggota Divisi Humas Makrab TI</li>
+                    <li>Calon Ketua Angkatan TI 2025</li>
+                </ul>
+            </div>
+
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ── CONTACT ── -->
+    <section id="contact">
+        <div class="section-header reveal">
+            <span class="section-tag">04 // CONTACT</span>
+            <h2 class="section-title">Get In Touch</h2>
+            <div class="section-line"></div>
+        </div>
+
+        <div class="contact-wrap">
+            <div class="contact-info">
+                <a class="contact-item reveal reveal-delay-1" href="mailto:seysarrizkysujadi@gmail.com">
+                    <div class="contact-icon">✉</div>
+                    <div>
+                        <div class="contact-label">Email</div>
+                        <div class="contact-value">seysarrizkysujadi@gmail.com</div>
+                    </div>
+                </a>
+                <a class="contact-item reveal reveal-delay-2" href="https://instagram.com/Skyy.Sarr" target="_blank" rel="noopener">
+                    <div class="contact-icon">◈</div>
+                    <div>
+                        <div class="contact-label">Instagram</div>
+                        <div class="contact-value">@Skyy.Sarr</div>
+                    </div>
+                </a>
+                <a class="contact-item reveal reveal-delay-3" href="https://github.com/skyytrtle" target="_blank" rel="noopener">
+                    <div class="contact-icon">⌥</div>
+                    <div>
+                        <div class="contact-label">GitHub</div>
+                        <div class="contact-value">skyytrtle</div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="contact-deco reveal reveal-delay-2">
+                <div class="big-text">SKYY</div>
+                <div class="status-line">
+                    <div class="status-dot"></div>
+                    AVAILABLE FOR COLLABORATION
+                </div>
+                <div style="font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; color: var(--muted); text-align: center; line-height: 2; margin-top: 8px;">
+                    &gt; Informatics Engineering Student — ITERA<br>
+                    &gt; Terbuka untuk kolaborasi &amp; project<br>
+                    &gt; Lampung, Indonesia
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── FOOTER ── -->
+    <footer>
+        <div class="footer-logo">SKYY //</div>
+        <div class="footer-copy">© 2026 — Seysar Rizky Sujadi. All rights reserved.</div>
+    </footer>
+
+    <!-- Back to top -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
+
+    <script src="script.js"></script>
+</body>
+</html>
